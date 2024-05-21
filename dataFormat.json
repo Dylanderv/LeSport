@@ -1,0 +1,72 @@
+{
+  "name": "Dos & Abdos",
+  "restBetweenSections": 60,
+  "sections": [
+    {
+      "type": "OneShotSection",
+      "name": "Dos",
+      "content": [
+        {
+          "type": "MultipleRep",
+          "name": "Rowing haltères",
+          "reps": 10,
+          "times": 4,
+          "rest": 60
+        },
+        {
+          "type": "Rest",
+          "time": 120
+        },
+        {
+          "type": "MultipleRep",
+          "name": "Tractions",
+          "times": 4,
+          "reps": 0,
+          "rest": 60
+        }
+      ]
+    },
+
+    {
+      "type": "RepeatedSection",
+      "name": "Abdos",
+      "times": 3,
+      "rest": 60,
+      "content": [
+        {
+          "type": "OneShotTimed",
+          "name": "Gainage assis",
+          "time": 60
+        },
+        {
+          "type": "OneShotRep",
+          "name": "Crunch",
+          "reps": 0
+        }
+      ]
+    },
+
+
+    {
+      "type": "OneShotSection",
+      "name": "Fin de session",
+      "content": [
+        {
+          "type": "OneShotRep",
+          "name": "Traction",
+          "reps": 0
+        },
+        {
+          "type": "OneShotRep",
+          "name": "Pompes",
+          "reps": 0
+        },
+        {
+          "type": "OneShotTimed",
+          "name": "Gainage",
+          "time": 180
+        }
+      ]
+    }
+  ]
+}
