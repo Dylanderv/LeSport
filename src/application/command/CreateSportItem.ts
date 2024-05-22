@@ -1,9 +1,9 @@
-export interface CreateSportItem {
-
+export interface StoreSportItem {
+    itemToCreate: SportItem;
 }
 
-export class CreateSportItemHandler {
+class StoreSportItem {
     handle(command: CreateSportItem) {
-
+        
     }
 }

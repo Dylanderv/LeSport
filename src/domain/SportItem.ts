@@ -1,6 +1,6 @@
 import { SportItemType } from "./SportItemType";
 
-export class SportItem {
+export abstract class SportItem {
     public readonly type: SportItemType;
     public name: string;
 
