@@ -1,12 +1,9 @@
 import { SportItemType } from "./SportItemType";
 
-export abstract class SportItem {
+export class SportItem {
     public readonly type: SportItemType;
-    public name: string;
 
-    constructor(type: SportItemType, name: string) {
+    constructor(type: SportItemType) {
         this.type = type;
-        this.name = name;
     }
 }
-
