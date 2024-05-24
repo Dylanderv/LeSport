@@ -1,4 +1,4 @@
-import { SportItem } from "../../domain/SportItem";
+import { SportItem } from "../../domain/SportItems/SportItem";
 import { AddSportItem } from "../../infrastructure/storage/InMemoryStorage";
 
 export interface StoreSportItem {
@@ -6,7 +6,7 @@ export interface StoreSportItem {
 }
 
 export abstract class StoreSportItemHandler {
-    handle(command: StoreSportItem) {
+    static handle(command: StoreSportItem) {
         AddSportItem(command.itemToCreate);
     }
 }

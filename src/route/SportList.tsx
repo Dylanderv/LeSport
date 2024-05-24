@@ -1,4 +1,5 @@
-import { Chip, Divider, List, ListItemButton, ListItemContent, Sheet, Typography } from "@mui/joy";
+import { Chip, Divider, List, Sheet, Typography } from "@mui/joy";
+import { Item } from "../Components/Item";
 
 function SportList() {
   return (
@@ -23,9 +24,9 @@ function SportList() {
       <List
         sx={{ '--ListItemDecorator-size': '56px' }}
       >
-        <Item title="Rowing haltères" body="4 x 10 reps / 20kg / repos : 1min"></Item>
-        <Item title="Repos" body="2min"></Item>
-        <Item title="Tractions" body="4 x max reps / repos : 1min"></Item>
+        <Item title="Rowing haltères" body="4 x 10 reps / 20kg / repos : 1min" Button={null}></Item>
+        <Item title="Repos" body="2min" Button={null}></Item>
+        <Item title="Tractions" body="4 x max reps / repos : 1min" Button={null}></Item>
       </List>
 
       <Divider>
@@ -37,8 +38,8 @@ function SportList() {
       <List
         sx={{ '--ListItemDecorator-size': '56px' }}
       >
-        <Item title="Gainage assis" body="1 min"></Item>
-        <Item title="Crunch" body="10 rep"></Item>
+        <Item title="Gainage assis" body="1 min" Button={null}></Item>
+        <Item title="Crunch" body="10 rep" Button={null}></Item>
       </List>
 
       <Divider>
@@ -48,32 +49,13 @@ function SportList() {
       <List
         sx={{ '--ListItemDecorator-size': '56px' }}
       >
-        <Item title="Traction" body="max rep"></Item>
-        <Item title="Pompes" body="max rep"></Item>
-        <Item title="Gainage" body="3 min"></Item>
+        <Item title="Traction" body="max rep" Button={null}></Item>
+        <Item title="Pompes" body="max rep" Button={null}></Item>
+        <Item title="Gainage" body="3 min" Button={null}></Item>
       </List>
 
     </Sheet>
   );
-}
-
-type ItemProp = {
-  title: string,
-  body: string
-}
-
-function Item(props: ItemProp) {
-  return (
-    <div>
-      <ListItemButton>
-        <ListItemContent>
-          <Typography level="title-sm">{props.title}</Typography>
-          <Typography level="body-sm" noWrap>{props.body}</Typography>
-        </ListItemContent>
-      </ListItemButton>
-      {/* <Divider orientation="horizontal" /> */}
-    </div>
-  )
 }
 
 export default SportList
