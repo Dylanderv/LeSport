@@ -1,5 +1,5 @@
 import { Button, List, MenuList, Sheet, styled } from "@mui/joy";
-import { useNavigate, useParams } from "react-router-dom";
+import {  useParams } from "react-router-dom";
 import Routes from "../Components/Routes";
 import { UnconfiguredSportItemElement } from "../Components/UnconfiguredSportItemElement";
 import { UnconfiguredSportItem } from "../domain/SportItems/UnconfiguredSportItem";
@@ -15,13 +15,10 @@ import { UpdateSectionHandler } from "../application/command/UpdateSection";
 
 function ViewSection() {
     const { id } = useParams()
-    const navigate = useNavigate();
     const [itemToConfigure, setItemToConfigure] = useState<UnconfiguredSportItem | null>(null);
 
     const section = GetSectionHandler.handle({ id });
     const sportItems = GetAllUnconfiguredSportItemsHandler.handle({});
-
-    const sportItemClicked = (sportItem: UnconfiguredSportItem) => navigate(`items/${sportItem.id}/configurator`)
 
     const sportItemAdded = (item: UnconfiguredSportItem) => setItemToConfigure(item);
         
@@ -41,7 +38,7 @@ function ViewSection() {
                 : <div>
                     <AddSportItem onItemSelected={sportItemAdded} sportItems={sportItems}></AddSportItem>
 
-                    <ListSportItems onClickSportItem={sportItemClicked} configuredSportItems={section!.items}></ListSportItems>
+                    <ListSportItems configuredSportItems={section!.items}></ListSportItems>
 
                 </div>}
 
@@ -51,15 +48,9 @@ function ViewSection() {
 
 type ListSportItemsProps = {
     configuredSportItems: TypedSportItem[],
-    onClickSportItem: (sportItem: UnconfiguredSportItem) => void
 }
 
-function ListSportItems({configuredSportItems, onClickSportItem }: ListSportItemsProps) {
-    function handleClickItem(sportItem: UnconfiguredSportItem) {
-        console.log(sportItem)
-        onClickSportItem(sportItem)
-    }
-
+function ListSportItems({configuredSportItems }: ListSportItemsProps) {
     return (
         <List>
             {
@@ -69,7 +60,6 @@ function ListSportItems({configuredSportItems, onClickSportItem }: ListSportItem
                             key={x.id}
                             item={x}
                             Button={null}
-                            onClick={handleClickItem}
                         >
                         </SportItemElement>)
             }

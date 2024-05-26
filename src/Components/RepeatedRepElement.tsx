@@ -25,7 +25,7 @@ export function OneShotRepElement(props: {
     Button: (() => ReactElement<any>) | null,
     onClick?: () => void
 }) {
-    const body = `$${props.item.rep} reps`;
+    const body = `${props.item.rep} reps`;
 
     return (
         <Item key={props.item.id} title={props.item.name} body={body} Button={props.Button} onClick={props.onClick}></Item>
