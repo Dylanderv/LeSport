@@ -4,7 +4,7 @@ import { ReactElement } from "react";
 export type ItemProp = {
   title: string,
   body: string,
-  Button: (() => ReactElement<any>) | null
+  Button?: (() => ReactElement<any>) | null
   onClick?: (() => void) | null
 }
 
@@ -17,7 +17,7 @@ export function Item(props: ItemProp) {
   }
   return (
       <ListItem endAction={
-        props.Button !== null ? props.Button() : <span></span>
+        props.Button !== null ? props.Button!() : <span></span>
       }>
         <ListItemButton onClick={handleClick}>
           <ListItemContent>

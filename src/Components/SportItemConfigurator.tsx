@@ -1,15 +1,12 @@
 import { Button, Divider, Input, Sheet } from "@mui/joy";
 import { useState } from "react";
 import Routes from "../Components/Routes";
-import { useNavigate, useParams } from "react-router-dom";
-import { GetItemFromSectionHandler } from "../application/Query/GetItemFromSection";
 import { OneShotRep } from "../domain/SportItems/OneShotRep";
 import { RepeatedRep } from "../domain/SportItems/RepeatedRep";
 import { OneShotTimed } from "../domain/SportItems/OneShotTimed";
 import { RepeatedTimed } from "../domain/SportItems/RepeatedTimed";
-import { GetSectionHandler } from "../application/Query/GetSection";
-import { UpdateSectionHandler } from "../application/command/UpdateSection";
 import { TypedSportItem } from "../domain/SportItems/SportItem";
+import { UnconfiguredSportItem } from "../domain/SportItems/UnconfiguredSportItem";
 
 enum SportItemKind {
     Timed,
@@ -18,15 +15,12 @@ enum SportItemKind {
 
 type ConfigurationForm = { times: number, repOrTime: number, rest: number }
 
-function SportItemConfigurator() {
-    const { sectionId, itemId } = useParams();
-    const navigate = useNavigate()
+function SportItemConfigurator({ itemToConfigure, onItemConfigured } : { itemToConfigure: UnconfiguredSportItem, onItemConfigured: (item: TypedSportItem) => void }) {
     const [stage, setStage] = useState<number>(0)
     const [kind, setKind] = useState<SportItemKind | null>(null)
     const [configuredSettings, setConfiguredSettings] = useState<ConfigurationForm>()
 
-    const section = GetSectionHandler.handle({ id: sectionId })
-    const item = GetItemFromSectionHandler.handle({ sectionId, itemId })
+    const item = itemToConfigure
 
     function goToNextStage() {
         setStage(stage + 1);
@@ -58,14 +52,11 @@ function SportItemConfigurator() {
                 break;
         }
 
-        section!.updateItem(newItem!);
-        UpdateSectionHandler.handle({ sectionToUpdate: section! });
-        navigate(-1);
+        onItemConfigured(newItem!);
     }
 
     return (
         <Sheet>
-            <Routes></Routes>
             {
                 stage === 0
                     ? <KindSelector onKindSelected={handleKindSelected}></KindSelector>

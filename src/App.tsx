@@ -6,7 +6,6 @@ import CreateSportItem from './route/CreateSportItem';
 import ListCreatedItems from './route/ListCreatedItems';
 import CreateSection from './route/CreateSection';
 import ListSections from './route/ListSections';
-import SportItemConfigurator from './route/SportItemConfigurator';
 import Routes from './Components/Routes';
 import ViewSection from './route/ViewSection';
 
@@ -41,10 +40,10 @@ export const router = createBrowserRouter([
     path: "/sections/:id",
     element: <ViewSection />,
   },
-  {
-    path: "/sections/:sectionId/items/:itemId/configurator",
-    element: <SportItemConfigurator />,
-  },
+  // {
+  //   path: "/sections/:sectionId/items/:itemId/configurator",
+  //   element: <SportItemConfigurator />,
+  // },
 ]);
 
 

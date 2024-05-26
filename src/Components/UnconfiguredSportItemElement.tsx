@@ -4,7 +4,7 @@ import { Item } from "./Item";
 
 type UnconfiguredSportItemElement = {
     item: UnconfiguredSportItem,
-    Button: (() => ReactElement<any>) | null,
+    Button?: (() => ReactElement<any>) | null,
     onClickItem?: ((item: UnconfiguredSportItem) => void) | null
 }
 
