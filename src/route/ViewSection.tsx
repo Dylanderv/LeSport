@@ -21,8 +21,6 @@ function ViewSection() {
     const section = GetSectionHandler.handle({ id });
     const sportItems = GetAllUnconfiguredSportItemsHandler.handle({});
 
-    console.log(section);
-
     const sportItemClicked = (sportItem: UnconfiguredSportItem) => navigate(`items/${sportItem.id}/configurator`)
 
     const sportItemAdded = (item: UnconfiguredSportItem) => setItemToConfigure(item);
@@ -41,11 +39,9 @@ function ViewSection() {
             {itemToConfigure !== null
                 ? <SportItemConfigurator itemToConfigure={itemToConfigure} onItemConfigured={onItemConfigured}  ></SportItemConfigurator>
                 : <div>
-                    <Test onItemSelected={sportItemAdded} sportItems={sportItems}></Test>
+                    <AddSportItem onItemSelected={sportItemAdded} sportItems={sportItems}></AddSportItem>
 
-                    <Button>Ajouter un exercice</Button>
-                    <Button>Ajouter un repos</Button>
-                    <ListSportItems onClickSportItem={sportItemClicked} configuredSportItems={section!.items} unconfiguredSportItems={section!.toConfigure}></ListSportItems>
+                    <ListSportItems onClickSportItem={sportItemClicked} configuredSportItems={section!.items}></ListSportItems>
 
                 </div>}
 
@@ -54,12 +50,11 @@ function ViewSection() {
 }
 
 type ListSportItemsProps = {
-    unconfiguredSportItems: UnconfiguredSportItem[],
     configuredSportItems: TypedSportItem[],
     onClickSportItem: (sportItem: UnconfiguredSportItem) => void
 }
 
-function ListSportItems({ unconfiguredSportItems, configuredSportItems, onClickSportItem }: ListSportItemsProps) {
+function ListSportItems({configuredSportItems, onClickSportItem }: ListSportItemsProps) {
     function handleClickItem(sportItem: UnconfiguredSportItem) {
         console.log(sportItem)
         onClickSportItem(sportItem)
@@ -86,7 +81,7 @@ const Popup = styled(Popper)({
     zIndex: 1000,
 });
 
-function Test({ sportItems, onItemSelected }: { sportItems: SportItem[], onItemSelected: (item: UnconfiguredSportItem) => void }) {
+function AddSportItem({ sportItems, onItemSelected }: { sportItems: SportItem[], onItemSelected: (item: UnconfiguredSportItem) => void }) {
     const buttonRef = React.useRef<HTMLButtonElement>(null);
     const [open, setOpen] = React.useState(false);
 
@@ -106,30 +101,14 @@ function Test({ sportItems, onItemSelected }: { sportItems: SportItem[], onItemS
             buttonRef.current!.focus();
             setOpen(false);
         }
-    };
+    };      
 
     return (
         <div>
-            <Button
-                ref={buttonRef}
-                id="composition-button"
-                aria-controls={'composition-menu'}
-                aria-haspopup="true"
-                aria-expanded={open ? 'true' : undefined}
-                variant="outlined"
-                color="neutral"
-                onClick={() => {
-                    setOpen(!open);
-                }}
-            >
-                Open menu
+            <Button ref={buttonRef} color="primary" onClick={() => setOpen(!open)}>
+                Ajouter un exercice
             </Button>
-            <Popup
-                role={undefined}
-                id="composition-menu"
-                open={open}
-                anchorEl={buttonRef.current}
-                disablePortal
+            <Popup open={open} anchorEl={buttonRef.current} disablePortal
                 modifiers={[
                     {
                         name: 'offset',
@@ -146,11 +125,7 @@ function Test({ sportItems, onItemSelected }: { sportItems: SportItem[], onItemS
                         }
                     }}
                 >
-                    <MenuList
-                        variant="outlined"
-                        onKeyDown={handleListKeyDown}
-                        sx={{ boxShadow: 'md' }}
-                    >
+                    <MenuList variant="outlined" onKeyDown={handleListKeyDown} sx={{ boxShadow: 'md' }}>
                         {sportItems.map(x => <UnconfiguredSportItemElement item={x} onClickItem={handleClick} Button={null}></UnconfiguredSportItemElement>)}
                     </MenuList>
                 </ClickAwayListener>

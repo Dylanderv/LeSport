@@ -1,6 +1,5 @@
 import { Button, Divider, Input, Sheet } from "@mui/joy";
 import { useState } from "react";
-import Routes from "../Components/Routes";
 import { OneShotRep } from "../domain/SportItems/OneShotRep";
 import { RepeatedRep } from "../domain/SportItems/RepeatedRep";
 import { OneShotTimed } from "../domain/SportItems/OneShotTimed";
@@ -15,7 +14,7 @@ enum SportItemKind {
 
 type ConfigurationForm = { times: number, repOrTime: number, rest: number }
 
-function SportItemConfigurator({ itemToConfigure, onItemConfigured } : { itemToConfigure: UnconfiguredSportItem, onItemConfigured: (item: TypedSportItem) => void }) {
+function SportItemConfigurator({ itemToConfigure, onItemConfigured }: { itemToConfigure: UnconfiguredSportItem, onItemConfigured: (item: TypedSportItem) => void }) {
     const [stage, setStage] = useState<number>(0)
     const [kind, setKind] = useState<SportItemKind | null>(null)
     const [configuredSettings, setConfiguredSettings] = useState<ConfigurationForm>()
@@ -61,10 +60,8 @@ function SportItemConfigurator({ itemToConfigure, onItemConfigured } : { itemToC
                 stage === 0
                     ? <KindSelector onKindSelected={handleKindSelected}></KindSelector>
                     : stage === 1 && kind === SportItemKind.Rep
-                        ? <RepConfigurator onRepConfigured={handleConfigurationDone}></RepConfigurator>
-                        : stage === 1 && kind === SportItemKind.Timed
-                            ? <TimeConfigurator onTimeConfigured={handleConfigurationDone}></TimeConfigurator>
-                            : <Recap onValidate={onValidate} configuredSettings={configuredSettings!}></Recap>
+                        ? <RepOrTimeConfigurator selectedKind={kind} onRepConfigured={handleConfigurationDone}></RepOrTimeConfigurator>
+                        : <Recap onValidate={onValidate} configuredSettings={configuredSettings!}></Recap>
             }
         </Sheet>
     )
@@ -85,83 +82,45 @@ function KindSelector({ onKindSelected }: { onKindSelected: (newKind: SportItemK
     )
 }
 
-function RepConfigurator({ onRepConfigured }: { onRepConfigured: (configuration: ConfigurationForm) => void }) {
-    const [formData, setFormData] = useState<ConfigurationForm>({times: 0, repOrTime: 0, rest: 0});
-    
+function RepOrTimeConfigurator({ onRepConfigured, selectedKind }: { onRepConfigured: (configuration: ConfigurationForm) => void, selectedKind: SportItemKind }) {
+    const [formData, setFormData] = useState<ConfigurationForm>({ times: 1, repOrTime: 1, rest: 0 });
+
     function handleChange(key: string, value: any) {
         setFormData({
             ...formData,
             [key]: isNaN(value) ? 0 : value
         });
     }
-    
+
     function validateForm() {
         onRepConfigured(formData);
     }
 
     return (
         <Sheet sx={{ display: "flex", flexDirection: "column", gap: 3, alignItems: "center", marginTop: 10 }}>
-            {/* <FormControl>
-
-            </FormControl>  */}
 
             <Input color="primary" type="number" placeholder="Séries (1 - n)" variant="outlined"
                 name="times" value={formData.times} onChange={e => handleChange(e.target.name, Number.parseInt(e.target.value))}
             />
             x
-            <Input color="primary" type="number" placeholder="Reps (1 - n)" variant="outlined"
-                name="repOrTime" value={formData.repOrTime} onChange={e => handleChange(e.target.name, Number.parseInt(e.target.value))}
-            />
-
-            rep
-
-            <Divider></Divider>
-            {/* A desactiver si Séries === 1 */}
-            <Input color="primary" type="number" placeholder="Repos (en secondes)" variant="outlined"
-                name="rest" value={formData.rest} onChange={e => handleChange(e.target.name, Number.parseInt(e.target.value))}
-            />
-
-            <Button onClick={validateForm}> -{">"} </Button>
-        </Sheet>
-    )
-}
-
-
-function TimeConfigurator({ onTimeConfigured }: { onTimeConfigured: (configuration: ConfigurationForm) => void }) {
-    const [formData, setFormData] = useState<ConfigurationForm>({times: 0, repOrTime: 0, rest: 0});
-    
-    function handleChange(key: string, value: any) {
-        setFormData({
-            ...formData,
-            [key]: isNaN(value) ? 0 : value
-        });
-    }
-    
-    function validateForm() {
-        onTimeConfigured(formData);
-    }
-
-    return (
-        <Sheet sx={{ display: "flex", flexDirection: "column", gap: 3, alignItems: "center", marginTop: 10 }}>
-            {/* <FormControl>
-
-            </FormControl>  */}
-
-            <Input color="primary" type="number" placeholder="Séries (1 - n)" variant="outlined"
-                name="times" value={formData.times} onChange={e => handleChange(e.target.name, Number.parseInt(e.target.value))}
-            />
-            x
-            <Input color="primary" type="number" placeholder="Temps (1 - n)" variant="outlined"
-                name="repOrTime" value={formData.repOrTime} onChange={e => handleChange(e.target.name, Number.parseInt(e.target.value))}
-            />
-
-            secondes
+            {
+                selectedKind === SportItemKind.Rep
+                ? <Input color="primary" type="number" placeholder="Reps (1 - n)" variant="outlined"
+                    name="repOrTime" value={formData.repOrTime} onChange={e => handleChange(e.target.name, Number.parseInt(e.target.value))}
+                />
+                :  <Input color="primary" type="number" placeholder="Temps (1 - n)" variant="outlined"
+                    name="repOrTime" value={formData.repOrTime} onChange={e => handleChange(e.target.name, Number.parseInt(e.target.value))}
+                />
+            }
 
             <Divider></Divider>
-            {/* A desactiver si Séries === 1 */}
-            <Input color="primary" type="number" placeholder="Repos (en secondes)" variant="outlined"
-                name="rest" value={formData.rest} onChange={e => handleChange(e.target.name, Number.parseInt(e.target.value))}
-            />
+            {
+                formData.times === 1
+                    ? <span></span>
+                    : <Input color="primary" type="number" placeholder="Repos (en secondes)" variant="outlined"
+                        name="rest" value={formData.rest} onChange={e => handleChange(e.target.name, Number.parseInt(e.target.value))}
+                    />
+            }
 
             <Button onClick={validateForm}> -{">"} </Button>
         </Sheet>
