@@ -1,107 +1,88 @@
-import { FormControl, FormLabel, Input, Select, Sheet, Option, Button, IconButton, List } from "@mui/joy";
-import { OneShotSection, Section, SectionType } from "../domain/Sections/Section";
+import { FormControl, FormLabel, Input, Sheet, Button, IconButton, List, Checkbox } from "@mui/joy";
+import { OneShotSection, RepeatedSection } from "../domain/Sections/Section";
 import { useState } from "react";
 import { StoreSectionHandler } from "../application/command/StoreSection";
+import { GetAllUnconfiguredSportItemsHandler } from "../application/Query/GetAllSportItems";
+import Routes from "../Components/Routes";
+import { UnconfiguredSportItem } from "../domain/SportItems/UnconfiguredSportItem";
+import { UnconfiguredSportItemElement } from "../Components/UnconfiguredSportItemElement";
 import { useNavigate } from "react-router-dom";
-import { SportItem } from "../domain/SportItems/SportItem";
-import { SportItemElement } from "../Components/SportItemElement";
-import { GetAllSportItemsHandler } from "../application/Query/GetAllSportItems";
 
 function CreateSection() {
-    const [type, setType] = useState<string | null>(null);
     const [name, setName] = useState<string | null>(null);
-    const navigate = useNavigate();
+    const [selectedSportItems, setSelectedSportItems] = useState<UnconfiguredSportItem[]>([]);
+    const [options, setOptions] = useState<RepeatedOptions>({ times: 0, rest: 0});
+    const navigate = useNavigate()
 
-    const sportItems = GetAllSportItemsHandler.handle({});
+    const [isRepeatable, setIsRepeatable] = useState<boolean>(false);
+    const sportItems = GetAllUnconfiguredSportItemsHandler.handle({});
 
-    function onSectionCreated(section: Section) {
+    const onSectionCreated = () => {
+        const section = isRepeatable
+            ? new RepeatedSection(name!, [], selectedSportItems, options.times, options.rest)
+            : new OneShotSection(name!, [], selectedSportItems)
         StoreSectionHandler.handle({ sectionToCreate: section })
+        navigate(`/sections/${section.id}`);
     }
 
     return (
-        <div>
-            <Button onClick={() => navigate("/create")}>create</Button>
-            <Button onClick={() => navigate("/list")}>list</Button>
-
-            <TypeAndNameSelector
-                onTypeChange={setType}
-                onNameChange={setName}
-            ></TypeAndNameSelector>
-
-            {type === SectionType.OneShotSection
-                ? <CreateOneShotSection onSectionCreated={onSectionCreated} name={name} sportItems={sportItems} />
-                : <None />}
-        </div>
-    )
-}
-
-type TypeAndNameSelectorProps = {
-    onTypeChange: (newValue: string | null) => void,
-    onNameChange: (newValue: string | null) => void
-};
-
-function TypeAndNameSelector(props: TypeAndNameSelectorProps) {
-    const typeList = Object.values(SectionType)
-
-    return (
-        <div>
-
-            <FormControl>
-                <FormLabel>Type</FormLabel>
-                <Select onChange={(_, v: string | null) => props.onTypeChange(v)} color="primary" placeholder="Type" size="md" variant="outlined">
-                    {typeList.map(x => <Option key={x} value={x}>{x}</Option>)}
-                </Select>
-            </FormControl>
+        <Sheet sx={{ display: "flex", flexDirection: "column", gap: 2}}>
+            <Routes></Routes>
 
             <FormControl>
                 <FormLabel>Nom</FormLabel>
-                <Input onChange={e => props.onNameChange(e.target.value)} color="primary" placeholder="Nom..." variant="outlined" />
+                <Input onChange={e => setName(e.target.value)} color="primary" placeholder="Nom..." variant="outlined" />
             </FormControl>
-        </div>
+
+            <div>
+                <Checkbox onChange={() => setIsRepeatable(!isRepeatable)} label="Repetable" />
+            </div>
+
+            {isRepeatable
+                ? <RepeatedSectionForm onOptionsChanged={setOptions}></RepeatedSectionForm>
+                : <span></span>}
+
+            <SelectSportItems onItemSelected={x => setSelectedSportItems(x)} name={name} sportItems={sportItems} />
+
+            <Button onClick={onSectionCreated}>Créer</Button>
+        </Sheet>
     )
 }
 
-type CreateOneShotSectionProps = {
+type SelectSportItemsProps = {
     name: string | null,
-    onSectionCreated: (section: Section) => void,
-    sportItems: SportItem[]
+    onItemSelected: (itemsSelected: UnconfiguredSportItem[]) => void,
+    sportItems: UnconfiguredSportItem[]
 }
 
-function CreateOneShotSection(props: CreateOneShotSectionProps) {
-    const [sportItems, setSportItems] = useState<SportItem[]>([]);
+function SelectSportItems(props: SelectSportItemsProps) {
+    const [sportItems, setSportItems] = useState<UnconfiguredSportItem[]>([]);
 
-    function validateForm() {
-        const section = new OneShotSection(props.name!, sportItems);
-        props.onSectionCreated(section);
-    }
-
-    function addOrRemoveItem(sportItem: SportItem) {
+    const addOrRemoveItem = (sportItem: UnconfiguredSportItem) => {
         if (sportItems.find(x => x === sportItem) === undefined) {
             setSportItems([...sportItems, sportItem]);
+            props.onItemSelected([...sportItems, sportItem]);
             return;
         }
         setSportItems(sportItems.filter(x => x !== sportItem));
+        props.onItemSelected(sportItems.filter(x => x !== sportItem));
     }
-    
 
     return (
         <List>
             {
                 props.sportItems
-                    .map(x => 
-                        <SportItemElement 
-                            key={JSON.stringify(x)} 
-                            item={x} 
+                    .map(x =>
+                        <UnconfiguredSportItemElement
+                            key={x.id}
+                            item={x}
                             Button={() =>
-                                 <AddButton onClick={() => addOrRemoveItem(x)}/>
-                                
-                            } 
+                                <AddButton onClick={() => addOrRemoveItem(x)} />
+
+                            }
                         >
-                        </SportItemElement>)
+                        </UnconfiguredSportItemElement>)
             }
-
-
-            <Button onClick={validateForm}>Créer</Button>
         </List>
     )
 }
@@ -109,23 +90,59 @@ function CreateOneShotSection(props: CreateOneShotSectionProps) {
 function AddButton(props: { onClick: () => void }) {
     const [isAdded, setIsAdded] = useState<boolean>(false);
 
-    function handleClick() {
+    const handleClick = () => {
         setIsAdded(!isAdded)
         props.onClick();
     }
 
     return (
-        // < size="sm" color="primary">
-        //                             wsh
-        //                         </IconButton>
         <IconButton color="primary" onClick={handleClick}>{isAdded ? "-" : "+"}</IconButton>
     )
 }
 
-function None() {
+type RepeatedSectionFormProps = {
+    onOptionsChanged: (options: RepeatedOptions) => void
+}
+
+type RepeatedOptions = {
+    times: number,
+    rest: number
+}
+
+
+function RepeatedSectionForm({ onOptionsChanged }: RepeatedSectionFormProps) {
+    const [options, setOptions] = useState<RepeatedOptions>({
+        times: 0,
+        rest: 0
+    });
+
+    const handleChange = (key: string, value: any) => {
+        setOptions({
+            ...options,
+            [key]: value
+        });
+        onOptionsChanged(options)
+
+    }
+
     return (
-        <span>Selectionner un type</span>
-    )
+        <Sheet sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+
+            <FormControl>
+                <FormLabel>Séries</FormLabel>
+                <Input color="primary" type="number" placeholder="Séries..." variant="outlined"
+                    name="times" value={options.times} onChange={e => handleChange(e.target.name, Number.parseInt(e.target.value))}
+                />
+            </FormControl>
+
+            <FormControl>
+                <FormLabel>Repos entre séries (secondes)</FormLabel>
+                <Input color="primary" type="number" placeholder="Repos entre séries..." variant="outlined"
+                    name="rest" value={options.rest} onChange={e => handleChange(e.target.name, Number.parseInt(e.target.value))}
+                />
+            </FormControl>
+        </Sheet>
+    );
 }
 
 export default CreateSection;

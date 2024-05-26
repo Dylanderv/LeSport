@@ -1,29 +1,30 @@
-import { Button, Dropdown, IconButton, IconButtonProps, ListDivider, ListItem, ListItemButton, ListItemContent, ListItemDecorator, Menu, MenuButton, MenuItem, Sheet, Typography } from "@mui/joy";
-import { ComponentType, ReactElement } from "react";
+import { ListItem, ListItemButton, ListItemContent, Typography } from "@mui/joy";
+import { ReactElement } from "react";
 
 export type ItemProp = {
   title: string,
   body: string,
   Button: (() => ReactElement<any>) | null
+  onClick?: (() => void) | null
 }
 
 
 export function Item(props: ItemProp) {
+  function handleClick() {
+    if (props.onClick !== null) {
+      props.onClick!();
+    }
+  }
   return (
-    <Sheet>
       <ListItem endAction={
         props.Button !== null ? props.Button() : <span></span>
       }>
-        <ListItemButton>
+        <ListItemButton onClick={handleClick}>
           <ListItemContent>
             <Typography level="title-sm">{props.title}</Typography>
             <Typography level="body-sm" noWrap>{props.body}</Typography>
           </ListItemContent>
         </ListItemButton>
       </ListItem>
-
-      {/* <SectionDropdown></SectionDropdown> */}
-
-    </Sheet>
   );
 }

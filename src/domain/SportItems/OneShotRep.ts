@@ -1,16 +1,14 @@
-import { SportItem } from "./SportItem";
-import { Rep } from "./Rep";
+import { TypedSportItem } from "./SportItem";
+import { Rep } from "./Marker/Rep";
 import { SportItemType } from "./SportItemType";
-import { Named } from "./Named";
+import { Named } from "./Marker/Named";
 
 
-export class OneShotRep extends SportItem implements Rep, Named {
+export class OneShotRep extends TypedSportItem implements Rep, Named {
     public readonly rep: number;
-    public readonly name: string;
 
-    constructor(name: string, rep: number) {
-        super(SportItemType.OneShotRep);
-        this.name = name;
+    constructor(name: string, rep: number, unconfiguredId: string) {
+        super(SportItemType.OneShotRep, name, unconfiguredId);
         this.rep = rep;
     }
 }

@@ -1,9 +1,12 @@
 import { Chip, Divider, List, Sheet, Typography } from "@mui/joy";
 import { Item } from "../Components/Item";
+import Routes from "../Components/Routes";
 
 function SportList() {
   return (
     <Sheet sx={{ marginLeft: 1 }}>
+            <Routes></Routes>
+
       <Typography
         id="ellipsis-list-demo"
         level="h1"
@@ -12,6 +15,7 @@ function SportList() {
       >
         Dos & Abdos
       </Typography>
+      
 
       <Chip color="primary" size="lg" variant="outlined">Repos entre section : 2 minutes</Chip>
 

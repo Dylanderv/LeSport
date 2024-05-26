@@ -1,12 +1,12 @@
-import { SportItem } from "../../domain/SportItems/SportItem";
-import { AddSportItem } from "../../infrastructure/storage/InMemoryStorage";
+import { UnconfiguredSportItem } from "../../domain/SportItems/UnconfiguredSportItem";
+import { AddUnconfiguredSportItem } from "../../infrastructure/storage/InMemoryStorage";
 
-export interface StoreSportItem {
-    itemToCreate: SportItem;
+export interface StoreUnconfiguredSportItem {
+    itemToCreate: UnconfiguredSportItem;
 }
 
-export abstract class StoreSportItemHandler {
-    static handle(command: StoreSportItem) {
-        AddSportItem(command.itemToCreate);
+export abstract class StoreUnconfiguredSportItemHandler {
+    static handle(command: StoreUnconfiguredSportItem) {
+        AddUnconfiguredSportItem(command.itemToCreate);
     }
 }

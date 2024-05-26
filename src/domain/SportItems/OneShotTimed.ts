@@ -1,15 +1,13 @@
-import { Named } from "./Named";
-import { SportItem } from "./SportItem";
+import { Named } from "./Marker/Named";
+import { TypedSportItem } from "./SportItem";
 import { SportItemType } from "./SportItemType";
-import { Timed } from "./Timed";
+import { Timed } from "./Marker/Timed";
 
-export class OneShotTimed extends SportItem implements Timed, Named {
+export class OneShotTimed extends TypedSportItem implements Timed, Named {
     public readonly time: number;
-    public readonly name: string;
 
-    constructor(name: string, time: number) {
-        super(SportItemType.OneShotTimed);
+    constructor(name: string, time: number, unconfiguredId: string) {
+        super(SportItemType.OneShotTimed, name, unconfiguredId);
         this.time = time;
-        this.name = name;
     }
 }

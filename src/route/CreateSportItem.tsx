@@ -1,26 +1,23 @@
-import { Select, Sheet, Option, Input, Typography, FormControl, FormLabel, Button } from "@mui/joy";
-import { SportItemType } from "../domain/SportItems/SportItemType";
+import { Sheet, Input, Typography, FormControl, FormLabel, Button } from "@mui/joy";
 import { useState } from "react";
-import { RepeatedRep } from "../domain/SportItems/RepeatedRep";
-import { SportItem } from "../domain/SportItems/SportItem";
-import { StoreSportItemHandler } from "../application/command/StoreSportItem";
-import { useNavigate } from "react-router-dom";
+import Routes from "../Components/Routes";
+import { StoreUnconfiguredSportItemHandler } from "../application/command/StoreSportItem";
+import { UnconfiguredSportItem } from "../domain/SportItems/UnconfiguredSportItem";
 
 function CreateSportItem() {
 
-    const [type, setType] = useState<string | null>(null);
+    // const [type, setType] = useState<string | null>(null);
     const [name, setName] = useState<string | null>(null);
-    const navigate = useNavigate();
 
 
-    function onSportItemCreated(item: SportItem) {
-        StoreSportItemHandler.handle({itemToCreate: item})
+    function onSportItemCreated() {
+        const sportItem = new UnconfiguredSportItem(name!);
+        StoreUnconfiguredSportItemHandler.handle({ itemToCreate: sportItem })
     }
 
     return (
         <Sheet sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            <Button onClick={() => navigate("/list")}>List</Button>
-            <Button onClick={() => navigate("/section")}>Section</Button>
+            <Routes></Routes>
 
             <Typography
                 id="ellipsis-list-demo"
@@ -31,35 +28,37 @@ function CreateSportItem() {
                 Créateur d'exercice
             </Typography>
 
-            <TypeAndNameSelector 
-                onTypeChange={setType}
+            <TypeAndNameSelector
+                // onTypeChange={setType}
                 onNameChange={setName}
             ></TypeAndNameSelector>
 
-            {type === SportItemType.RepeatedRep 
+            {/* {type === SportItemType.RepeatedRep 
             ? <CreateRepeatedRep onRepeatedRepCreated={onSportItemCreated} name={name!} /> 
-            : <None />}
+            : <None />} */}
+
+            <Button onClick={onSportItemCreated}>Créer</Button>
         </Sheet>
     )
 }
 
 type TypeAndNameSelectorProps = {
-    onTypeChange: (newValue: string | null) => void,
+    // onTypeChange: (newValue: string | null) => void,
     onNameChange: (newValue: string | null) => void
 };
 
 function TypeAndNameSelector(props: TypeAndNameSelectorProps) {
-    const typeList = Object.values(SportItemType)
+    // const typeList = Object.values(SportItemType)
 
     return (
         <div>
 
-            <FormControl>
+            {/* <FormControl>
                 <FormLabel>Type</FormLabel>
                 <Select onChange={(_, v: string | null) => props.onTypeChange(v)} color="primary" placeholder="Type" size="md" variant="outlined">
-                    {typeList.map(x => <Option key={x} value={x}>{x}</Option>)}
+                    {typeList.map(x => <Option key={x.id} value={x}>{x}</Option>)}
                 </Select>
-            </FormControl>
+            </FormControl> */}
 
             <FormControl>
                 <FormLabel>Nom</FormLabel>
@@ -69,63 +68,63 @@ function TypeAndNameSelector(props: TypeAndNameSelectorProps) {
     )
 }
 
-type CreateRepeatedRepProps = {
-    name: string,
-    onRepeatedRepCreated: (repeatedRep: RepeatedRep) => void
-}
+// type CreateRepeatedRepProps = {
+//     name: string,
+//     onRepeatedRepCreated: (repeatedRep: RepeatedRep) => void
+// }
 
-function CreateRepeatedRep(props: CreateRepeatedRepProps) {
-    const [formData, setFormData] = useState<any>({
-        reps: 0,
-        times: 0,
-        rest: 0
-    });
+// function CreateRepeatedRep(props: CreateRepeatedRepProps) {
+//     const [formData, setFormData] = useState<any>({
+//         reps: 0,
+//         times: 0,
+//         rest: 0
+//     });
 
-    function handleChange(key: string, value: any) {
-        setFormData({
-            ...formData,
-            [key]: value
-        });
-    }
+//     function handleChange(key: string, value: any) {
+//         setFormData({
+//             ...formData,
+//             [key]: value
+//         });
+//     }
 
-    function validateForm() {
-        const repeatedRep = new RepeatedRep(props.name, formData.times, formData.rest, formData.reps);
-        props.onRepeatedRepCreated(repeatedRep);
-    }
+//     function validateForm() {
+//         const repeatedRep = new RepeatedRep(props.name, formData.times, formData.rest, formData.reps);
+//         props.onRepeatedRepCreated(repeatedRep);
+//     }
 
-    return (
-        <Sheet sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+//     return (
+//         <Sheet sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
 
-            <FormControl>
-                <FormLabel>Reps</FormLabel>
-                <Input color="primary" type="number" placeholder="Reps..." variant="outlined"
-                    name="reps" value={formData.reps} onChange={e => handleChange(e.target.name, Number.parseInt(e.target.value))}
-                />
-            </FormControl>
+//             <FormControl>
+//                 <FormLabel>Reps</FormLabel>
+//                 <Input color="primary" type="number" placeholder="Reps..." variant="outlined"
+//                     name="reps" value={formData.reps} onChange={e => handleChange(e.target.name, Number.parseInt(e.target.value))}
+//                 />
+//             </FormControl>
 
-            <FormControl>
-                <FormLabel>Séries</FormLabel>
-                <Input color="primary" type="number" placeholder="Séries..." variant="outlined"
-                    name="times" value={formData.times} onChange={e => handleChange(e.target.name, Number.parseInt(e.target.value))}
-                />
-            </FormControl>
+//             <FormControl>
+//                 <FormLabel>Séries</FormLabel>
+//                 <Input color="primary" type="number" placeholder="Séries..." variant="outlined"
+//                     name="times" value={formData.times} onChange={e => handleChange(e.target.name, Number.parseInt(e.target.value))}
+//                 />
+//             </FormControl>
 
-            <FormControl>
-                <FormLabel>Repos entre séries (secondes)</FormLabel>
-                <Input color="primary" type="number" placeholder="Repos entre séries..." variant="outlined"
-                    name="rest" value={formData.rest} onChange={e => handleChange(e.target.name, Number.parseInt(e.target.value))}
-                />
-            </FormControl>
+//             <FormControl>
+//                 <FormLabel>Repos entre séries (secondes)</FormLabel>
+//                 <Input color="primary" type="number" placeholder="Repos entre séries..." variant="outlined"
+//                     name="rest" value={formData.rest} onChange={e => handleChange(e.target.name, Number.parseInt(e.target.value))}
+//                 />
+//             </FormControl>
 
-            <Button onClick={validateForm}>Créer</Button>
+//             <Button onClick={validateForm}>Créer</Button>
 
-            <span>{JSON.stringify(formData)}</span>
-        </Sheet>
-    );
-}
+//             <span>{JSON.stringify(formData)}</span>
+//         </Sheet>
+//     );
+// }
 
-function None() {
-    return (<span> Selectionner un type pour continuer </span>);
-}
+// function None() {
+//     return (<span> Selectionner un type pour continuer </span>);
+// }
 
 export default CreateSportItem;

@@ -1,19 +1,16 @@
-import { useNavigate } from "react-router-dom";
-import { GetAllSportItemsHandler } from "../application/Query/GetAllSportItems";
-import { Button } from "@mui/joy";
-import { SportItemElement } from "../Components/SportItemElement";
+import { GetAllUnconfiguredSportItemsHandler } from "../application/Query/GetAllSportItems";
+import Routes from "../Components/Routes";
+import { UnconfiguredSportItemElement } from "../Components/UnconfiguredSportItemElement";
 
 function ListCreatedItems() {
-    const navigate = useNavigate();
-
-    const sportItems = GetAllSportItemsHandler.handle({});
+    const sportItems = GetAllUnconfiguredSportItemsHandler.handle({});
 
     return (
         <div>
-            <Button onClick={() => navigate("/create")}>Create</Button>
-            <Button onClick={() => navigate("/section")}>Section</Button>
+            <Routes></Routes>
 
-            {sportItems.map(x => <SportItemElement key={JSON.stringify(x)} item={x} Button={null}></SportItemElement>)}
+
+            {sportItems.map(x => <UnconfiguredSportItemElement key={x.id} item={x} Button={null}></UnconfiguredSportItemElement>)}
         </div>
     )
 }

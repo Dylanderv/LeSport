@@ -4,7 +4,7 @@ export interface GetAllSections {
 }
 
 export abstract class GetAllSectionsHandler {
-    static handle(query: GetAllSections) {
+    static handle(_query: GetAllSections) {
         return [...SectionDb];
     }
 }

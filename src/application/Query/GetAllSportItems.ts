@@ -1,10 +1,10 @@
-import { SportItemDb } from "../../infrastructure/storage/InMemoryStorage";
+import { UnconfiguredSportItemDb } from "../../infrastructure/storage/InMemoryStorage";
 
-export interface GetAllSportItems {
+export interface GetAllUnconfiguredSportItems {
 }
 
-export abstract class GetAllSportItemsHandler {
-    static handle(query: GetAllSportItems) {
-        return [...SportItemDb];
+export abstract class GetAllUnconfiguredSportItemsHandler {
+    static handle(_query: GetAllUnconfiguredSportItems) {
+        return [...UnconfiguredSportItemDb];
     }
 }
