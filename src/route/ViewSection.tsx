@@ -1,5 +1,5 @@
-import { Button, List, MenuList, Sheet, styled } from "@mui/joy";
-import {  useParams } from "react-router-dom";
+import { Button, FormControl, FormLabel, Input, List, MenuList, Sheet, styled } from "@mui/joy";
+import { useParams } from "react-router-dom";
 import Routes from "../Components/Routes";
 import { UnconfiguredSportItemElement } from "../Components/UnconfiguredSportItemElement";
 import { UnconfiguredSportItem } from "../domain/SportItems/UnconfiguredSportItem";
@@ -12,19 +12,23 @@ import { Popper } from '@mui/base/Popper';
 import { GetAllUnconfiguredSportItemsHandler } from "../application/Query/GetAllSportItems";
 import SportItemConfigurator from "../Components/SportItemConfigurator";
 import { UpdateSectionHandler } from "../application/command/UpdateSection";
+import { Rest } from "../domain/SportItems/Rest";
+import { Section } from "../domain/Sections/Section";
 
 function ViewSection() {
     const { id } = useParams()
     const [itemToConfigure, setItemToConfigure] = useState<UnconfiguredSportItem | null>(null);
+    const [section, setSection] = useState<Section>(GetSectionHandler.handle({ id })!)
 
-    const section = GetSectionHandler.handle({ id });
     const sportItems = GetAllUnconfiguredSportItemsHandler.handle({});
 
     const sportItemAdded = (item: UnconfiguredSportItem) => setItemToConfigure(item);
-        
+
     const onItemConfigured = (item: TypedSportItem) => {
-        section!.items = [...section!.items, item];
-        UpdateSectionHandler.handle({sectionToUpdate: section!});
+        const newSection = section.Copy();
+        newSection.items = [...newSection.items, item];
+        setSection(newSection)
+        UpdateSectionHandler.handle({ sectionToUpdate: newSection! });
         setItemToConfigure(null);
     }
 
@@ -37,6 +41,7 @@ function ViewSection() {
                 ? <SportItemConfigurator itemToConfigure={itemToConfigure} onItemConfigured={onItemConfigured}  ></SportItemConfigurator>
                 : <div>
                     <AddSportItem onItemSelected={sportItemAdded} sportItems={sportItems}></AddSportItem>
+                    <AddRest onRestCreated={onItemConfigured}></AddRest>
 
                     <ListSportItems configuredSportItems={section!.items}></ListSportItems>
 
@@ -50,7 +55,7 @@ type ListSportItemsProps = {
     configuredSportItems: TypedSportItem[],
 }
 
-function ListSportItems({configuredSportItems }: ListSportItemsProps) {
+function ListSportItems({ configuredSportItems }: ListSportItemsProps) {
     return (
         <List>
             {
@@ -91,7 +96,7 @@ function AddSportItem({ sportItems, onItemSelected }: { sportItems: SportItem[],
             buttonRef.current!.focus();
             setOpen(false);
         }
-    };      
+    };
 
     return (
         <div>
@@ -118,6 +123,61 @@ function AddSportItem({ sportItems, onItemSelected }: { sportItems: SportItem[],
                     <MenuList variant="outlined" onKeyDown={handleListKeyDown} sx={{ boxShadow: 'md' }}>
                         {sportItems.map(x => <UnconfiguredSportItemElement item={x} onClickItem={handleClick} Button={null}></UnconfiguredSportItemElement>)}
                     </MenuList>
+                </ClickAwayListener>
+            </Popup>
+        </div>
+    );
+}
+
+
+function AddRest({ onRestCreated }: { onRestCreated: (item: Rest) => void }) {
+    const buttonRef = React.useRef<HTMLButtonElement>(null);
+    const [open, setOpen] = React.useState(false);
+    const [rest, setRest] = useState<number>(0);
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const addRest = () => {
+        onRestCreated(new Rest(rest));
+        handleClose();
+    };
+
+    const onRestChange = (newValue: string) => setRest(Number.parseInt(newValue))
+
+    return (
+        <div>
+            <Button ref={buttonRef} color="primary" onClick={() => setOpen(!open)}>
+                Ajouter un repos
+            </Button>
+            <Popup open={open} anchorEl={buttonRef.current} disablePortal
+                modifiers={[
+                    {
+                        name: 'offset',
+                        options: {
+                            offset: [0, 4],
+                        },
+                    },
+                ]}
+                sx={{
+                    background: "black"
+                }}
+            >
+                <ClickAwayListener
+                    onClickAway={(event) => {
+                        if (event.target !== buttonRef.current) {
+                            handleClose();
+                        }
+                    }}
+                >
+                    <div>
+                        <FormControl>
+                            <FormLabel>Temps</FormLabel>
+                            <Input onChange={e => onRestChange(e.target.value)} color="primary" placeholder="Temps..." variant="outlined" />
+                        </FormControl>
+                        <Button onClick={addRest}>Valider</Button>
+                    </div>
                 </ClickAwayListener>
             </Popup>
         </div>

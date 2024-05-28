@@ -6,8 +6,8 @@ export abstract class Section {
     public readonly name: string
     public items: TypedSportItem[]
 
-    constructor(type: SectionType, name: string, items: TypedSportItem[]) {
-        this.id = crypto.randomUUID();
+    constructor(id: string | null, type: SectionType, name: string, items: TypedSportItem[]) {
+        this.id = id === null ? crypto.randomUUID() : id;
         this.type = type;
         this.name = name;
         this.items = items;
@@ -17,14 +17,24 @@ export abstract class Section {
         this.items = items;
     }
 
+    abstract Copy(): Section;
+
     addOrUpdateItem(item: TypedSportItem) {
         this.items = [...this.items.filter(x => x.unconfiguredId !== item.unconfiguredId), item];
     }
 }
 
 export class OneShotSection extends Section {
-    constructor(name: string, items: TypedSportItem[]) {
-        super(SectionType.OneShotSection, name, items);
+    constructor(id: string | null, name: string, items: TypedSportItem[]) {
+        super(id, SectionType.OneShotSection, name, items);
+    }
+
+    static New(name: string, items: TypedSportItem[]) {
+        return new OneShotSection(null, name, items);
+    }
+
+    Copy() {
+        return new OneShotSection(this.id, this.name, this.items);
     }
 }
 
@@ -32,10 +42,19 @@ export class RepeatedSection extends Section {
     public readonly times: number;
     public readonly rest: number;
 
-    constructor(name: string, items: TypedSportItem[], times: number, rest: number) {
-        super(SectionType.RepeatedSection, name, items);
+    constructor(id: string | null, name: string, items: TypedSportItem[], times: number, rest: number) {
+        super(id, SectionType.RepeatedSection, name, items);
         this.times = times;
         this.rest = rest;
+    }
+
+
+    static New(name: string, items: TypedSportItem[], times: number, rest: number) {
+        return new RepeatedSection(null, name, items, times, rest);
+    }
+
+    Copy() {
+        return new RepeatedSection(this.id, this.name, this.items, this.times, this.rest);
     }
 }
 

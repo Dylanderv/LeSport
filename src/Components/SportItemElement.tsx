@@ -2,10 +2,11 @@ import { ReactElement } from "react";
 import { RepeatedRep } from "../domain/SportItems/RepeatedRep";
 import { TypedSportItem } from "../domain/SportItems/SportItem";
 import { SportItemType } from "../domain/SportItems/SportItemType";
-import { OneShotRepElement, OneShotTimedElement, RepeatedRepElement, RepeatedTimedElement } from "./RepeatedRepElement";
+import { OneShotRepElement, OneShotTimedElement, RepeatedRepElement, RepeatedTimedElement, RestElement } from "./RepeatedRepElement";
 import { OneShotTimed } from "../domain/SportItems/OneShotTimed";
 import { RepeatedTimed } from "../domain/SportItems/RepeatedTimed";
 import { OneShotRep } from "../domain/SportItems/OneShotRep";
+import { Rest } from "../domain/SportItems/Rest";
 
 type SportItemElementProps = {
     item: TypedSportItem,
@@ -33,6 +34,6 @@ export function SportItemElement(props: SportItemElementProps) {
             return <OneShotRepElement item={props.item as OneShotRep} Button={props.Button} onClick={handleClick}></OneShotRepElement>;
 
         case SportItemType.Rest:
-            return <span>not supported yet</span>;
+            return <RestElement item={props.item as Rest} Button={props.Button} onClick={handleClick}></RestElement>;
     }
 }

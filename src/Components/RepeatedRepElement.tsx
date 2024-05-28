@@ -4,6 +4,7 @@ import { Item } from "./Item";
 import { OneShotRep } from "../domain/SportItems/OneShotRep";
 import { OneShotTimed } from "../domain/SportItems/OneShotTimed";
 import { RepeatedTimed } from "../domain/SportItems/RepeatedTimed";
+import { Rest } from "../domain/SportItems/Rest";
 
 type RepeatedRepElementProps = {
     item: RepeatedRep,
@@ -52,6 +53,18 @@ export function RepeatedTimedElement(props: {
     onClick?: () => void
 }) {
     const body = `${props.item.times} x ${props.item.time}s / Repos: ${props.item.rest}s`;
+
+    return (
+        <Item key={props.item.id} title={props.item.name} body={body} Button={props.Button} onClick={props.onClick}></Item>
+    );
+}
+
+export function RestElement(props: {
+    item: Rest,
+    Button: (() => ReactElement<any>) | null,
+    onClick?: () => void
+}) {
+    const body = `Repos: ${props.item.time}s`;
 
     return (
         <Item key={props.item.id} title={props.item.name} body={body} Button={props.Button} onClick={props.onClick}></Item>
