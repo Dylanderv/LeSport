@@ -1,5 +1,10 @@
 import { OneShotSection, Section } from "../../domain/Sections/Section";
 import { UnconfiguredSportItem } from "../../domain/SportItems/UnconfiguredSportItem";
+import {Playlist} from "../../domain/Playlists/Playlist.ts";
+import {OneShotRep} from "../../domain/SportItems/OneShotRep.ts";
+import {RepeatedTimed} from "../../domain/SportItems/RepeatedTimed.ts";
+import {RepeatedRep} from "../../domain/SportItems/RepeatedRep.ts";
+import {OneShotTimed} from "../../domain/SportItems/OneShotTimed.ts";
 
 export let UnconfiguredSportItemDb: UnconfiguredSportItem[] = [
     new UnconfiguredSportItem("Gainage"),
@@ -7,7 +12,15 @@ export let UnconfiguredSportItemDb: UnconfiguredSportItem[] = [
     new UnconfiguredSportItem("KitKat (bon la ouais c'est le gateau)"),
 ];
 export let SectionDb: Section[] = [
-    new OneShotSection("1", "Séance de fou", [])
+    new OneShotSection("1", "Séance de fou", [
+        new OneShotRep("Tractions", 10, "1"),
+        new RepeatedTimed("Gainage", 3, 30, 30, "2"),
+        new RepeatedRep("Pompes", 3, 60, 20, "3"),
+        new OneShotTimed("Gainage final", 180, "4")
+    ])
+];
+export let PlaylistDb: Playlist[] = [
+    new Playlist("1", "Wsh", [...SectionDb])
 ];
 
 export function AddUnconfiguredSportItem(item: UnconfiguredSportItem) {
@@ -29,4 +42,18 @@ export function UpdateSection(section: Section) {
     newDb.push(section);
     SectionDb = newDb;
     console.log(SectionDb)
+}
+
+export function AddPlaylist(playlist: Playlist) {
+    console.log(JSON.stringify(playlist));
+    PlaylistDb.push(playlist);
+    console.log(PlaylistDb)
+}
+
+export function UpdatePlaylist(playlist: Playlist) {
+    console.log(JSON.stringify(playlist));
+    const newDb = PlaylistDb.filter(x => x.id !== playlist.id);
+    newDb.push(playlist);
+    PlaylistDb = newDb;
+    console.log(PlaylistDb)
 }

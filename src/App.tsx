@@ -8,6 +8,10 @@ import CreateSection from './route/CreateSection';
 import ListSections from './route/ListSections';
 import Routes from './Components/Routes';
 import ViewSection from './route/ViewSection';
+import CreatePlaylist from "./route/CreatePlaylist.tsx";
+import ListPlaylists from "./route/ListPlaylists.tsx";
+import ConfigurePlaylist from "./route/ConfigurePlaylist.tsx";
+import ViewPlaylist from "./route/ViewPlaylist.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -39,6 +43,22 @@ export const router = createBrowserRouter([
   {
     path: "/sections/:id",
     element: <ViewSection />,
+  },
+  {
+    path: "/playlists",
+    element: <ListPlaylists />,
+  },
+  {
+    path: "/playlists/create",
+    element: <CreatePlaylist />,
+  },
+  {
+    path: "/playlists/:id/configure",
+    element: <ConfigurePlaylist />,
+  },
+  {
+    path: "/playlists/:id",
+    element: <ViewPlaylist />,
   },
   // {
   //   path: "/sections/:sectionId/items/:itemId/configurator",

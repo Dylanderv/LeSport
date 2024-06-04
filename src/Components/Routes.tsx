@@ -11,6 +11,8 @@ function Routes() {
             <Button onClick={() => navigate("/test")}>test</Button>
             <Button onClick={() => navigate("/sections")}>sections</Button>
             <Button onClick={() => navigate("/sections/create")}>create section</Button>
+            <Button onClick={() => navigate("/playlists")}>List playlists</Button>
+            <Button onClick={() => navigate("/playlists/create")}>create playlist</Button>
         </div>
     )
 }

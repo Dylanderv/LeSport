@@ -22,7 +22,10 @@ function ViewSection() {
 
     const sportItems = GetAllUnconfiguredSportItemsHandler.handle({});
 
-    const sportItemAdded = (item: UnconfiguredSportItem) => setItemToConfigure(item);
+    const sportItemAdded = (item: UnconfiguredSportItem) => {
+        console.log("configure")
+        setItemToConfigure(item);
+    }
 
     const onItemConfigured = (item: TypedSportItem) => {
         const newSection = section.Copy();
@@ -35,7 +38,7 @@ function ViewSection() {
     return (
         <Sheet>
             <Routes></Routes>
-            <span>yooo {id}</span>
+            <span>Section {id}</span>
 
             {itemToConfigure !== null
                 ? <SportItemConfigurator itemToConfigure={itemToConfigure} onItemConfigured={onItemConfigured}  ></SportItemConfigurator>
@@ -85,8 +88,8 @@ function AddSportItem({ sportItems, onItemSelected }: { sportItems: SportItem[],
     };
 
     const handleClick = (item: UnconfiguredSportItem) => {
-        onItemSelected(item);
         handleClose();
+        onItemSelected(item);
     };
 
     const handleListKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
