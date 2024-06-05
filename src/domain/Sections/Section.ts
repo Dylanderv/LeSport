@@ -1,12 +1,30 @@
 import { TypedSportItem } from "../SportItems/SportItem";
 
+export interface ISection {
+    readonly id: string;
+    readonly type: SectionType
+    readonly name: string
+    items: TypedSportItem[]
+    readonly times: number | null;
+    readonly rest: number | null;
+}
+
+export function SectionBuilder(section: ISection): Section {
+    switch (section.type) {
+        case SectionType.OneShotSection:
+            return new OneShotSection(section.id, section.name, section.items);
+        case SectionType.RepeatedSection:
+            return new RepeatedSection(section.id, section.name, section.items, section.times!, section.rest!);
+    }
+}
+
 export abstract class Section {
     public readonly id: string;
     public readonly type: SectionType
     public readonly name: string
     public items: TypedSportItem[]
 
-    constructor(id: string | null, type: SectionType, name: string, items: TypedSportItem[]) {
+    protected constructor(id: string | null, type: SectionType, name: string, items: TypedSportItem[]) {
         this.id = id === null ? crypto.randomUUID() : id;
         this.type = type;
         this.name = name;
@@ -22,6 +40,8 @@ export abstract class Section {
     addOrUpdateItem(item: TypedSportItem) {
         this.items = [...this.items.filter(x => x.unconfiguredId !== item.unconfiguredId), item];
     }
+    
+    abstract ToData(): ISection
 }
 
 export class OneShotSection extends Section {
@@ -35,6 +55,15 @@ export class OneShotSection extends Section {
 
     Copy() {
         return new OneShotSection(this.id, this.name, this.items);
+    }
+    
+    ToData(): ISection {
+        return {
+            ...this,
+            times: null,
+            rest: null,
+            items: this.items.map(x => x.ToData())
+        }
     }
 }
 
@@ -55,6 +84,13 @@ export class RepeatedSection extends Section {
 
     Copy() {
         return new RepeatedSection(this.id, this.name, this.items, this.times, this.rest);
+    }
+    
+    ToData(): ISection {
+        return {
+            ...this,
+            items: this.items.map(x => x.ToData())
+        }
     }
 }
 

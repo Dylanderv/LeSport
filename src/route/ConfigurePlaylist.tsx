@@ -1,7 +1,7 @@
 import {Button, List, MenuList, Sheet, styled} from "@mui/joy";
 import { useParams } from "react-router-dom";
 import Routes from "../Components/Routes";
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { Playlist } from "../domain/Playlists/Playlist";
 import {Section} from "../domain/Sections/Section.ts";
 import {GetPlaylistHandler} from "../application/Query/GetPlaylist.ts";
@@ -10,40 +10,56 @@ import {ClickAwayListener} from "@mui/base/ClickAwayListener";
 import {Item} from "../Components/Item.tsx";
 import {GetAllSectionsHandler} from "../application/Query/GetAllSections.ts";
 import {UpdatePlaylistHandler} from "../application/command/UpdatePlaylist.ts";
+import Loading from "../Components/Loading.tsx";
 
 function ConfigurePlaylist() {
     const { id } = useParams()
-    const [playlist, setPlaylist] = useState<Playlist>(GetPlaylistHandler.handle({ id })!)
+    const [playlist, setPlaylist] = useState<Playlist | null>(null)
+    const [ sections, setSections ] = useState<Section[] | null>(null);
     
-    const sections = GetAllSectionsHandler.handle({});
-
-    const onSectionAdded = (section: Section) => {
-        const newPlaylist = playlist.Copy();
+    useEffect(() => {
+        async function GetData() {
+            setPlaylist(await GetPlaylistHandler.handle({ id }));
+            setSections(await GetAllSectionsHandler.handle({}));
+        }
+        
+        if (playlist === null && sections === null)
+            GetData();
+    }, [])
+    
+    const onSectionAdded = async (section: Section) => {
+        const newPlaylist = playlist!.Copy();
         newPlaylist.addSection(section);
-        UpdatePlaylistHandler.handle({ playlistToUpdate: newPlaylist! });
+        await UpdatePlaylistHandler.handle({ playlistToUpdate: newPlaylist! });
         setPlaylist(newPlaylist);
     }
     
     return (
         <Sheet>
             <Routes></Routes>
-            <span>Playlist {id}</span>
 
-                <div>
-                    <AddSection onSectionSelected={onSectionAdded} sections={sections}></AddSection>
+            {sections  === null || playlist === null 
+                ? <Loading></Loading>
+                : <div>
+                    <span>Playlist {id}</span>
 
-                    <ListSections sections={playlist!.sections}></ListSections>
-                </div>
+                    <div>
+                        <AddSection onSectionSelected={onSectionAdded} sections={sections}></AddSection>
 
-        </Sheet>
-    )
-}
+                        <ListSections sections={playlist.sections}></ListSections>
+                    </div>
+                </div> 
+            }
+
+                </Sheet>
+                )
+            }
 
 type ListSportItemsProps = {
     sections: Section[],
 }
 
-function ListSections({ sections }: ListSportItemsProps) {
+function ListSections({sections}: ListSportItemsProps) {
     return (
         <List>
             {

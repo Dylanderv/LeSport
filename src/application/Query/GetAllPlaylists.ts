@@ -1,10 +1,10 @@
-import { PlaylistDb } from "../../infrastructure/storage/InMemoryStorage";
+import {GetAllPlaylists} from "../../infrastructure/storage/firestoreRepo.ts";
 
 export interface GetAllPlaylists {
 }
 
 export abstract class GetAllPlaylistsHandler {
-    static handle(_query: GetAllPlaylists) {
-        return [...PlaylistDb];
+    static async handle(_query: GetAllPlaylists) {
+        return await GetAllPlaylists();
     }
 }

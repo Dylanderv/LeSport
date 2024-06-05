@@ -1,12 +1,12 @@
 import {Playlist} from "../../domain/Playlists/Playlist.ts";
-import { UpdatePlaylist } from "../../infrastructure/storage/InMemoryStorage";
+import {UpdatePlaylist} from "../../infrastructure/storage/firestoreRepo.ts";
 
 export interface UpdatePlaylist {
     playlistToUpdate: Playlist
 }
 
 export abstract class UpdatePlaylistHandler {
-    static handle(command: UpdatePlaylist) {
-        UpdatePlaylist(command.playlistToUpdate);
+    static async handle(command: UpdatePlaylist) {
+        await UpdatePlaylist(command.playlistToUpdate);
     }
 }

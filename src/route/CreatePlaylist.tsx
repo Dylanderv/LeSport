@@ -10,9 +10,9 @@ function CreatePlaylist() {
     const [restBetweenSections, setRestBetweenSections] = useState<number | null>(null);
     const navigate = useNavigate()
 
-    const onPlaylistCreated = () => {
+    const onPlaylistCreated = async () => {
         const playlist = Playlist.New(name!, [], restBetweenSections!)
-        StorePlaylistHandler.handle({ playlistToCreate: playlist })
+        await StorePlaylistHandler.handle({ playlistToCreate: playlist })
         navigate(`/Playlists/${playlist.id}`);
     }
 

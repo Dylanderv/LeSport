@@ -10,9 +10,9 @@ function CreateSportItem() {
     const [name, setName] = useState<string | null>(null);
 
 
-    function onSportItemCreated() {
+    async function onSportItemCreated() {
         const sportItem = new UnconfiguredSportItem(name!);
-        StoreUnconfiguredSportItemHandler.handle({ itemToCreate: sportItem })
+        await StoreUnconfiguredSportItemHandler.handle({ itemToCreate: sportItem })
     }
 
     return (

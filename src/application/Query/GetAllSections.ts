@@ -1,10 +1,10 @@
-import { SectionDb } from "../../infrastructure/storage/InMemoryStorage";
+import {GetAllSections} from "../../infrastructure/storage/firestoreRepo.ts";
 
 export interface GetAllSections {
 }
 
 export abstract class GetAllSectionsHandler {
-    static handle(_query: GetAllSections) {
-        return [...SectionDb];
+    static async handle(_query: GetAllSections) {
+        return await GetAllSections();
     }
 }

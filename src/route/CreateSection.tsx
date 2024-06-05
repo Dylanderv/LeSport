@@ -12,11 +12,11 @@ function CreateSection() {
 
     const [isRepeatable, setIsRepeatable] = useState<boolean>(false);
 
-    const onSectionCreated = () => {
+    const onSectionCreated = async () => {
         const section = isRepeatable
             ? RepeatedSection.New(name!, [], options.times, options.rest)
             : OneShotSection.New(name!, [])
-        StoreSectionHandler.handle({ sectionToCreate: section })
+        await StoreSectionHandler.handle({ sectionToCreate: section })
         navigate(`/sections/${section.id}`);
     }
 

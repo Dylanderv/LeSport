@@ -1,10 +1,10 @@
-import { UnconfiguredSportItemDb } from "../../infrastructure/storage/InMemoryStorage";
+import {GetAllUnconfiguredSportItems} from "../../infrastructure/storage/firestoreRepo.ts";
 
 export interface GetAllUnconfiguredSportItems {
 }
 
 export abstract class GetAllUnconfiguredSportItemsHandler {
-    static handle(_query: GetAllUnconfiguredSportItems) {
-        return [...UnconfiguredSportItemDb];
+    static async handle(_query: GetAllUnconfiguredSportItems) {
+        return await GetAllUnconfiguredSportItems();
     }
 }

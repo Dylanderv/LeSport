@@ -1,37 +1,47 @@
-import { Button, FormControl, FormLabel, Input, List, MenuList, Sheet, styled } from "@mui/joy";
-import { useParams } from "react-router-dom";
+import {Button, FormControl, FormLabel, Input, List, MenuList, Sheet, styled} from "@mui/joy";
+import {useParams} from "react-router-dom";
 import Routes from "../Components/Routes";
-import { UnconfiguredSportItemElement } from "../Components/UnconfiguredSportItemElement";
-import { UnconfiguredSportItem } from "../domain/SportItems/UnconfiguredSportItem";
-import { GetSectionHandler } from "../application/Query/GetSection";
-import { SportItem, TypedSportItem } from "../domain/SportItems/SportItem";
-import { SportItemElement } from "../Components/SportItemElement";
-import React, { useState } from "react";
-import { ClickAwayListener } from '@mui/base/ClickAwayListener';
-import { Popper } from '@mui/base/Popper';
-import { GetAllUnconfiguredSportItemsHandler } from "../application/Query/GetAllSportItems";
+import {UnconfiguredSportItemElement} from "../Components/UnconfiguredSportItemElement";
+import {UnconfiguredSportItem} from "../domain/SportItems/UnconfiguredSportItem";
+import {GetSectionHandler} from "../application/Query/GetSection";
+import {SportItem, TypedSportItem} from "../domain/SportItems/SportItem";
+import {SportItemElement} from "../Components/SportItemElement";
+import React, {useEffect, useState} from "react";
+import {ClickAwayListener} from '@mui/base/ClickAwayListener';
+import {Popper} from '@mui/base/Popper';
+import {GetAllUnconfiguredSportItemsHandler} from "../application/Query/GetAllSportItems";
 import SportItemConfigurator from "../Components/SportItemConfigurator";
-import { UpdateSectionHandler } from "../application/command/UpdateSection";
-import { Rest } from "../domain/SportItems/Rest";
-import { Section } from "../domain/Sections/Section";
+import {UpdateSectionHandler} from "../application/command/UpdateSection";
+import {Rest} from "../domain/SportItems/Rest";
+import {Section} from "../domain/Sections/Section";
+import Loading from "../Components/Loading.tsx";
 
 function ViewSection() {
-    const { id } = useParams()
+    const {id} = useParams()
     const [itemToConfigure, setItemToConfigure] = useState<UnconfiguredSportItem | null>(null);
-    const [section, setSection] = useState<Section>(GetSectionHandler.handle({ id })!)
+    const [section, setSection] = useState<Section | null>(null)
+    const [sportItems, setSportItems] = useState<UnconfiguredSportItem[] | null>(null);
 
-    const sportItems = GetAllUnconfiguredSportItemsHandler.handle({});
+    useEffect(() => {
+        async function GetData() {
+            setSportItems(await GetAllUnconfiguredSportItemsHandler.handle({}));
+            setSection(await GetSectionHandler.handle({id}));
+        }
+
+        if (sportItems === null && section === null)
+            GetData();
+    }, [])
 
     const sportItemAdded = (item: UnconfiguredSportItem) => {
         console.log("configure")
         setItemToConfigure(item);
     }
 
-    const onItemConfigured = (item: TypedSportItem) => {
-        const newSection = section.Copy();
+    const onItemConfigured = async (item: TypedSportItem) => {
+        const newSection = section!.Copy();
         newSection.items = [...newSection.items, item];
         setSection(newSection)
-        UpdateSectionHandler.handle({ sectionToUpdate: newSection! });
+        await UpdateSectionHandler.handle({sectionToUpdate: newSection!});
         setItemToConfigure(null);
     }
 
@@ -40,15 +50,22 @@ function ViewSection() {
             <Routes></Routes>
             <span>Section {id}</span>
 
-            {itemToConfigure !== null
-                ? <SportItemConfigurator itemToConfigure={itemToConfigure} onItemConfigured={onItemConfigured}  ></SportItemConfigurator>
+            {sportItems === null || section === null
+                ? <Loading></Loading>
                 : <div>
-                    <AddSportItem onItemSelected={sportItemAdded} sportItems={sportItems}></AddSportItem>
-                    <AddRest onRestCreated={onItemConfigured}></AddRest>
+                    {itemToConfigure !== null
+                        ? <SportItemConfigurator itemToConfigure={itemToConfigure}
+                                                 onItemConfigured={onItemConfigured}></SportItemConfigurator>
+                        : <div>
+                            <AddSportItem onItemSelected={sportItemAdded} sportItems={sportItems}></AddSportItem>
+                            <AddRest onRestCreated={onItemConfigured}></AddRest>
 
-                    <ListSportItems configuredSportItems={section!.items}></ListSportItems>
+                            <ListSportItems configuredSportItems={section.items}></ListSportItems>
 
-                </div>}
+                        </div>}
+                </div>
+            }
+
 
         </Sheet>
     )
@@ -58,7 +75,7 @@ type ListSportItemsProps = {
     configuredSportItems: TypedSportItem[],
 }
 
-function ListSportItems({ configuredSportItems }: ListSportItemsProps) {
+function ListSportItems({configuredSportItems}: ListSportItemsProps) {
     return (
         <List>
             {
@@ -79,7 +96,10 @@ const Popup = styled(Popper)({
     zIndex: 1000,
 });
 
-function AddSportItem({ sportItems, onItemSelected }: { sportItems: SportItem[], onItemSelected: (item: UnconfiguredSportItem) => void }) {
+function AddSportItem({sportItems, onItemSelected}: {
+    sportItems: SportItem[],
+    onItemSelected: (item: UnconfiguredSportItem) => void
+}) {
     const buttonRef = React.useRef<HTMLButtonElement>(null);
     const [open, setOpen] = React.useState(false);
 
@@ -107,14 +127,14 @@ function AddSportItem({ sportItems, onItemSelected }: { sportItems: SportItem[],
                 Ajouter un exercice
             </Button>
             <Popup open={open} anchorEl={buttonRef.current} disablePortal
-                modifiers={[
-                    {
-                        name: 'offset',
-                        options: {
-                            offset: [0, 4],
-                        },
-                    },
-                ]}
+                   modifiers={[
+                       {
+                           name: 'offset',
+                           options: {
+                               offset: [0, 4],
+                           },
+                       },
+                   ]}
             >
                 <ClickAwayListener
                     onClickAway={(event) => {
@@ -123,8 +143,9 @@ function AddSportItem({ sportItems, onItemSelected }: { sportItems: SportItem[],
                         }
                     }}
                 >
-                    <MenuList variant="outlined" onKeyDown={handleListKeyDown} sx={{ boxShadow: 'md' }}>
-                        {sportItems.map(x => <UnconfiguredSportItemElement key={x.id} item={x} onClickItem={handleClick} Button={null}></UnconfiguredSportItemElement>)}
+                    <MenuList variant="outlined" onKeyDown={handleListKeyDown} sx={{boxShadow: 'md'}}>
+                        {sportItems.map(x => <UnconfiguredSportItemElement key={x.id} item={x} onClickItem={handleClick}
+                                                                           Button={null}></UnconfiguredSportItemElement>)}
                     </MenuList>
                 </ClickAwayListener>
             </Popup>
@@ -133,7 +154,7 @@ function AddSportItem({ sportItems, onItemSelected }: { sportItems: SportItem[],
 }
 
 
-function AddRest({ onRestCreated }: { onRestCreated: (item: Rest) => void }) {
+function AddRest({onRestCreated}: { onRestCreated: (item: Rest) => void }) {
     const buttonRef = React.useRef<HTMLButtonElement>(null);
     const [open, setOpen] = React.useState(false);
     const [rest, setRest] = useState<number>(0);
@@ -155,17 +176,17 @@ function AddRest({ onRestCreated }: { onRestCreated: (item: Rest) => void }) {
                 Ajouter un repos
             </Button>
             <Popup open={open} anchorEl={buttonRef.current} disablePortal
-                modifiers={[
-                    {
-                        name: 'offset',
-                        options: {
-                            offset: [0, 4],
-                        },
-                    },
-                ]}
-                sx={{
-                    background: "black"
-                }}
+                   modifiers={[
+                       {
+                           name: 'offset',
+                           options: {
+                               offset: [0, 4],
+                           },
+                       },
+                   ]}
+                   sx={{
+                       background: "black"
+                   }}
             >
                 <ClickAwayListener
                     onClickAway={(event) => {
@@ -177,7 +198,8 @@ function AddRest({ onRestCreated }: { onRestCreated: (item: Rest) => void }) {
                     <div>
                         <FormControl>
                             <FormLabel>Temps</FormLabel>
-                            <Input onChange={e => onRestChange(e.target.value)} color="primary" placeholder="Temps..." variant="outlined" />
+                            <Input onChange={e => onRestChange(e.target.value)} color="primary" placeholder="Temps..."
+                                   variant="outlined"/>
                         </FormControl>
                         <Button onClick={addRest}>Valider</Button>
                     </div>

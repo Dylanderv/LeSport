@@ -1,14 +1,14 @@
-import { PlaylistDb } from "../../infrastructure/storage/InMemoryStorage";
+import {GetPlaylist} from "../../infrastructure/storage/firestoreRepo.ts";
 
 export interface GetPlaylist {
     id: string | undefined
 }
 
 export abstract class GetPlaylistHandler {
-    static handle(query: GetPlaylist) {
-        if (query.id === undefined) {
+    static async handle(query: GetPlaylist) {
+        if (query.id === undefined) 
             return null;
-        }
-        return PlaylistDb.filter(x => x.id === query.id)[0];
+        
+        return await GetPlaylist(query.id);
     }
 }

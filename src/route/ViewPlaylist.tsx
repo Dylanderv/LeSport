@@ -4,12 +4,20 @@ import {GetPlaylistHandler} from "../application/Query/GetPlaylist.ts";
 import {Playlist} from "../domain/Playlists/Playlist.ts";
 import {RepeatedSection, Section} from "../domain/Sections/Section.ts";
 import {SportItemElement} from "../Components/SportItemElement.tsx";
+import {useEffect, useState} from "react";
 
 function ViewPlaylist() {
     const { id } = useParams()
-    
-    const playlist = GetPlaylistHandler.handle({ id });
+    const [ playlist, setPlaylist ] = useState<Playlist | null>(null);
 
+    useEffect(() => {
+        async function GetData() {
+            setPlaylist(await GetPlaylistHandler.handle({ id }));
+        }
+
+        if (playlist === null)
+            GetData();
+    }, [])
     
     return (
         <Sheet>

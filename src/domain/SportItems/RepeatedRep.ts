@@ -1,4 +1,4 @@
-import { TypedSportItem } from "./SportItem";
+import {ISportItem, TypedSportItem} from "./SportItem";
 import { Rep } from "./Marker/Rep";
 import { Repeated } from "./Marker/Repeated";
 import { Named } from "./Marker/Named";
@@ -15,5 +15,9 @@ export class RepeatedRep extends TypedSportItem implements Repeated, Rep, Named 
         this.times = times;
         this.rest = rest;
         this.rep = rep;
+    }
+
+    ToData(): ISportItem {
+        return {...this, time: null}
     }
 }
