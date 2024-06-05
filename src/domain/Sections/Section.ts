@@ -1,10 +1,10 @@
-import { TypedSportItem } from "../SportItems/SportItem";
+import {ISportItem, SportItemBuilder, TypedSportItem} from "../SportItems/SportItem";
 
 export interface ISection {
     readonly id: string;
     readonly type: SectionType
     readonly name: string
-    items: TypedSportItem[]
+    items: ISportItem[]
     readonly times: number | null;
     readonly rest: number | null;
 }
@@ -12,9 +12,9 @@ export interface ISection {
 export function SectionBuilder(section: ISection): Section {
     switch (section.type) {
         case SectionType.OneShotSection:
-            return new OneShotSection(section.id, section.name, section.items);
+            return new OneShotSection(section.id, section.name, section.items.map(x => SportItemBuilder(x)));
         case SectionType.RepeatedSection:
-            return new RepeatedSection(section.id, section.name, section.items, section.times!, section.rest!);
+            return new RepeatedSection(section.id, section.name, section.items.map(x => SportItemBuilder(x)), section.times!, section.rest!);
     }
 }
 
@@ -89,7 +89,10 @@ export class RepeatedSection extends Section {
     ToData(): ISection {
         return {
             ...this,
-            items: this.items.map(x => x.ToData())
+            items: this.items.map(x => {
+                console.log(x);
+                return x.ToData()
+            })
         }
     }
 }

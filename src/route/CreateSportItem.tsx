@@ -2,7 +2,7 @@ import { Sheet, Input, Typography, FormControl, FormLabel, Button } from "@mui/j
 import { useState } from "react";
 import Routes from "../Components/Routes";
 import { StoreUnconfiguredSportItemHandler } from "../application/command/StoreSportItem";
-import { UnconfiguredSportItem } from "../domain/SportItems/UnconfiguredSportItem";
+import {UnconfiguredSportItem} from "../domain/SportItems/SportItem.ts";
 
 function CreateSportItem() {
 

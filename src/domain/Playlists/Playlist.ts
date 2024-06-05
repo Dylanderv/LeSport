@@ -1,4 +1,15 @@
-import {Section} from "../Sections/Section.ts";
+import {ISection, OneShotSection, RepeatedSection, Section, SectionType} from "../Sections/Section.ts";
+
+export interface IPlaylist {
+    readonly id: string;
+    readonly name: string;
+    sections: Section[];
+    restBetweenSections: number | null;
+}
+
+export function PlaylistBuilder(playlist: IPlaylist): Playlist {
+    return new Playlist(playlist.id, playlist.name, playlist.sections, playlist.restBetweenSections);
+}
 
 export class Playlist {
     public readonly id: string;
@@ -23,5 +34,9 @@ export class Playlist {
     
     public addSection(section: Section): void {
         this.sections = [...this.sections, section];
+    }
+    
+    public ToData(): IPlaylist {
+        return {...this}
     }
 }

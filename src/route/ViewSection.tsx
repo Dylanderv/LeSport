@@ -2,9 +2,8 @@ import {Button, FormControl, FormLabel, Input, List, MenuList, Sheet, styled} fr
 import {useParams} from "react-router-dom";
 import Routes from "../Components/Routes";
 import {UnconfiguredSportItemElement} from "../Components/UnconfiguredSportItemElement";
-import {UnconfiguredSportItem} from "../domain/SportItems/UnconfiguredSportItem";
 import {GetSectionHandler} from "../application/Query/GetSection";
-import {SportItem, TypedSportItem} from "../domain/SportItems/SportItem";
+import {Rest, SportItem, TypedSportItem, UnconfiguredSportItem} from "../domain/SportItems/SportItem";
 import {SportItemElement} from "../Components/SportItemElement";
 import React, {useEffect, useState} from "react";
 import {ClickAwayListener} from '@mui/base/ClickAwayListener';
@@ -12,7 +11,6 @@ import {Popper} from '@mui/base/Popper';
 import {GetAllUnconfiguredSportItemsHandler} from "../application/Query/GetAllSportItems";
 import SportItemConfigurator from "../Components/SportItemConfigurator";
 import {UpdateSectionHandler} from "../application/command/UpdateSection";
-import {Rest} from "../domain/SportItems/Rest";
 import {Section} from "../domain/Sections/Section";
 import Loading from "../Components/Loading.tsx";
 

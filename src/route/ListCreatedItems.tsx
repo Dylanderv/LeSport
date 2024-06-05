@@ -1,7 +1,7 @@
 import { GetAllUnconfiguredSportItemsHandler } from "../application/Query/GetAllSportItems";
 import Routes from "../Components/Routes";
 import { UnconfiguredSportItemElement } from "../Components/UnconfiguredSportItemElement";
-import React, {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {UnconfiguredSportItem} from "../domain/SportItems/UnconfiguredSportItem.ts";
 import Loading from "../Components/Loading.tsx";
 

@@ -1,7 +1,7 @@
 import { collection, doc, setDoc, getDocs, getDoc, CollectionReference } from 'firebase/firestore'
 import {UnconfiguredSportItem} from "../../domain/SportItems/UnconfiguredSportItem.ts";
 import {ISection, Section, SectionBuilder} from "../../domain/Sections/Section.ts";
-import {Playlist} from "../../domain/Playlists/Playlist.ts";
+import {Playlist, PlaylistBuilder} from "../../domain/Playlists/Playlist.ts";
 import {db} from "../firebase/firebase.config.ts";
 
 const UnconfiguredSportItemStore = collection(db, 'UnconfiguredSportItem');
@@ -29,7 +29,7 @@ export async function GetPlaylist(id: string) {
     const data = (await getDoc(doc(PlaylistStore, id))).data() as Playlist;
     console.log("GetPlaylist", data)
     
-    return data
+    return PlaylistBuilder(data);
 }
 export async function GetSection(id: string) {
     const data = (await getDoc(doc(SectionStore, id))).data() as ISection;
@@ -57,9 +57,9 @@ export async function UpdateSection(section: Section) {
 }
 
 export async function AddPlaylist(playlist: Playlist) {
-    await setDoc(doc(PlaylistStore, playlist.id), {...playlist});
+    await setDoc(doc(PlaylistStore, playlist.id), playlist.ToData());
 }
 
 export async function UpdatePlaylist(playlist: Playlist) {
-    await setDoc(doc(PlaylistStore, playlist.id), {...playlist});
+    await setDoc(doc(PlaylistStore, playlist.id), playlist.ToData());
 }

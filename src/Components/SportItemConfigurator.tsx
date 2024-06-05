@@ -1,11 +1,13 @@
 import { Button, Divider, FormControl, FormLabel, Input, Sheet } from "@mui/joy";
 import { useState } from "react";
-import { OneShotRep } from "../domain/SportItems/OneShotRep";
-import { RepeatedRep } from "../domain/SportItems/RepeatedRep";
-import { OneShotTimed } from "../domain/SportItems/OneShotTimed";
-import { RepeatedTimed } from "../domain/SportItems/RepeatedTimed";
-import { TypedSportItem } from "../domain/SportItems/SportItem";
-import { UnconfiguredSportItem } from "../domain/SportItems/UnconfiguredSportItem";
+import {
+    OneShotRep,
+    OneShotTimed,
+    RepeatedRep,
+    RepeatedTimed,
+    TypedSportItem,
+    UnconfiguredSportItem
+} from "../domain/SportItems/SportItem";
 
 enum SportItemKind {
     Timed,
@@ -25,6 +27,7 @@ function SportItemConfigurator({ itemToConfigure, onItemConfigured }: { itemToCo
     }
 
     function handleKindSelected(newKind: SportItemKind) {
+        console.log(newKind);
         setKind(newKind);
         goToNextStage();
     }
