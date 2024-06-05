@@ -16,7 +16,7 @@ type SportItemElementProps = {
 
 export function SportItemElement(props: SportItemElementProps) {
     function handleClick() {
-        if (props.onClick !== null) {
+        if (props.onClick) {
             props.onClick!(props.item);
         }
     }

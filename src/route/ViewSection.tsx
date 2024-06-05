@@ -124,7 +124,7 @@ function AddSportItem({ sportItems, onItemSelected }: { sportItems: SportItem[],
                     }}
                 >
                     <MenuList variant="outlined" onKeyDown={handleListKeyDown} sx={{ boxShadow: 'md' }}>
-                        {sportItems.map(x => <UnconfiguredSportItemElement item={x} onClickItem={handleClick} Button={null}></UnconfiguredSportItemElement>)}
+                        {sportItems.map(x => <UnconfiguredSportItemElement key={x.id} item={x} onClickItem={handleClick} Button={null}></UnconfiguredSportItemElement>)}
                     </MenuList>
                 </ClickAwayListener>
             </Popup>

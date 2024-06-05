@@ -10,7 +10,7 @@ type UnconfiguredSportItemElement = {
 
 export function UnconfiguredSportItemElement(props: UnconfiguredSportItemElement) {
     function handleClick() {
-        if (props.onClickItem !== null) {
+        if (props.onClickItem) {
             props.onClickItem!(props.item);
         }
     }

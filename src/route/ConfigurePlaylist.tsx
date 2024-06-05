@@ -49,7 +49,7 @@ function ListSections({ sections }: ListSportItemsProps) {
             {
                 sections
                     .map(x =>
-                        <span>{x.name}</span>)
+                        <span key={x.id}>{x.name}</span>)
             }
         </List>
     )

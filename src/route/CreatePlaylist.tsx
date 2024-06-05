@@ -7,10 +7,11 @@ import {StorePlaylistHandler} from "../application/command/StorePlaylist.ts";
 
 function CreatePlaylist() {
     const [name, setName] = useState<string | null>(null);
+    const [restBetweenSections, setRestBetweenSections] = useState<number | null>(null);
     const navigate = useNavigate()
 
     const onPlaylistCreated = () => {
-        const playlist = Playlist.New(name!)
+        const playlist = Playlist.New(name!, [], restBetweenSections!)
         StorePlaylistHandler.handle({ playlistToCreate: playlist })
         navigate(`/Playlists/${playlist.id}`);
     }
@@ -24,7 +25,12 @@ function CreatePlaylist() {
                 <Input onChange={e => setName(e.target.value)} color="primary" placeholder="Nom..." variant="outlined" />
             </FormControl>
             
-            <Button onClick={onPlaylistCreated}>Créer</Button>
+            <FormControl>
+                <FormLabel>Repos entre sections</FormLabel>
+                <Input onChange={e => setRestBetweenSections(Number.parseInt(e.target.value))} color="primary" placeholder="Repos entre sections..." variant="outlined" />
+            </FormControl>
+            
+            <Button disabled={name === null && restBetweenSections === null} onClick={onPlaylistCreated}>Créer</Button>
         </Sheet>
     )
 }

@@ -1,4 +1,4 @@
-import { OneShotSection, Section } from "../../domain/Sections/Section";
+import {OneShotSection, RepeatedSection, Section} from "../../domain/Sections/Section";
 import { UnconfiguredSportItem } from "../../domain/SportItems/UnconfiguredSportItem";
 import {Playlist} from "../../domain/Playlists/Playlist.ts";
 import {OneShotRep} from "../../domain/SportItems/OneShotRep.ts";
@@ -17,10 +17,22 @@ export let SectionDb: Section[] = [
         new RepeatedTimed("Gainage", 3, 30, 30, "2"),
         new RepeatedRep("Pompes", 3, 60, 20, "3"),
         new OneShotTimed("Gainage final", 180, "4")
+    ]),
+    new RepeatedSection("2", "Fin de séance", [
+        new OneShotRep("Tractions", 10, "1"),
+        new RepeatedTimed("Gainage", 3, 30, 30, "2"),
+        new RepeatedRep("Pompes", 3, 60, 20, "3"),
+        new OneShotTimed("Gainage final", 180, "4")
+    ], 5, 60),
+    new OneShotSection("3", "Wsh bieng ou quoi", [
+        new OneShotRep("Tractions", 10, "1"),
+        new RepeatedTimed("Gainage", 3, 30, 30, "2"),
+        new RepeatedRep("Pompes", 3, 60, 20, "3"),
+        new OneShotTimed("Gainage final", 180, "4")
     ])
 ];
 export let PlaylistDb: Playlist[] = [
-    new Playlist("1", "Wsh", [...SectionDb])
+    new Playlist("1", "Wsh", [...SectionDb], 60)
 ];
 
 export function AddUnconfiguredSportItem(item: UnconfiguredSportItem) {

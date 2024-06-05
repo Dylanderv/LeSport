@@ -1,8 +1,9 @@
 import {Button, Chip, Divider, List, Sheet, Typography} from "@mui/joy";
 import {useNavigate, useParams} from "react-router-dom";
-import {Item} from "../Components/Item.tsx";
 import {GetPlaylistHandler} from "../application/Query/GetPlaylist.ts";
 import {Playlist} from "../domain/Playlists/Playlist.ts";
+import {RepeatedSection, Section} from "../domain/Sections/Section.ts";
+import {SportItemElement} from "../Components/SportItemElement.tsx";
 
 function ViewPlaylist() {
     const { id } = useParams()
@@ -20,7 +21,7 @@ function ViewPlaylist() {
 function DisplayPlaylist({ playlist }: { playlist: Playlist }) {
     const navigate = useNavigate();
     
-    const onClickConfigure = () => navigate(`/playlists/${id}/configure`)
+    const onClickConfigure = () => navigate(`/playlists/${playlist.id}/configure`)
     
     
     return (
@@ -37,47 +38,35 @@ function DisplayPlaylist({ playlist }: { playlist: Playlist }) {
             </Typography>
 
 
-            <Chip color="primary" size="lg" variant="outlined">Repos entre section : 2 minutes</Chip>
+            <Chip color="primary" size="lg" variant="outlined">Repos entre section : {playlist.restBetweenSections}s</Chip>
 
-
-            <Divider>
-                Dos
-            </Divider>
-            {/* <Chip color="primary" size="lg" variant="outlined">Repos : 1 minute</Chip> */}
-
-            <List
-                sx={{ '--ListItemDecorator-size': '56px' }}
-            >
-                <Item title="Rowing haltères" body="4 x 10 reps / 20kg / repos : 1min" Button={null}></Item>
-                <Item title="Repos" body="2min" Button={null}></Item>
-                <Item title="Tractions" body="4 x max reps / repos : 1min" Button={null}></Item>
-            </List>
-
-            <Divider>
-                Abdos
-            </Divider>
-            <Chip color="primary" size="lg" variant="outlined">3 fois</Chip>
-            <Chip color="primary" size="lg" variant="outlined">Repos: 1 min</Chip>
-
-            <List
-                sx={{ '--ListItemDecorator-size': '56px' }}
-            >
-                <Item title="Gainage assis" body="1 min" Button={null}></Item>
-                <Item title="Crunch" body="10 rep" Button={null}></Item>
-            </List>
-
-            <Divider>
-                Fin de session
-            </Divider>
-
-            <List
-                sx={{ '--ListItemDecorator-size': '56px' }}
-            >
-                <Item title="Traction" body="max rep" Button={null}></Item>
-                <Item title="Pompes" body="max rep" Button={null}></Item>
-                <Item title="Gainage" body="3 min" Button={null}></Item>
-            </List>
+            {playlist.sections.map(x => 
+                <DisplaySection key={x.id} section={x}></DisplaySection>
+            )}
         </div>
+    )
+}
+
+function DisplaySection({ section }: { section: Section }) {
+    return (
+        <Sheet>
+            <Divider>
+                {section.name}
+            </Divider>
+            {section instanceof RepeatedSection && (section as RepeatedSection) !== null
+                ? <div>
+                    <Chip color="primary" size="lg" variant="outlined">{section.times} fois</Chip>
+                    <Chip color="primary" size="lg" variant="outlined">Repos: {section.rest}s</Chip>
+                </div>
+                : <span></span>
+            }   
+            
+            <List>
+                {section.items.map(x => 
+                <SportItemElement key={x.id} item={x} Button={null}></SportItemElement>
+                    )}
+            </List>
+        </Sheet>
     )
 }
 
